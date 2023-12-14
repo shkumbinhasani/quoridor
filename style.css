@@ -1,0 +1,85 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Product Sans,sans-serif;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+}
+
+.container {
+    width: 400px;
+    margin: 0 auto;
+    border: 1px solid #e7e7e7;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: #110c2e26 0 48px 100px;
+    height: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.title {
+    width: fit-content;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+#game {
+    margin-bottom: 1rem;
+}
+
+.player-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.player-stat {
+    background-color: #e7e7e7;
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+}
+
+.player-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+}
+
+.player-walls {
+    margin: 0;
+}
+
+#toggle-wall {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: linear-gradient(90deg, #F7612C, #CC2B60, #602F7F);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+#toggle-wall:hover {
+    background: linear-gradient(90deg, #F7612C, #CC2B60, #602F7F);
+    transform: scale(1.01);
+}
+
+#toggle-wall:active {
+    transform: scale(0.99);
+}
+
+#toggle-wall:focus-visible {
+    outline: 2px solid #F7612C;
+    outline-offset: 2px;
+}

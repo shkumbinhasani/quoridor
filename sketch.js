@@ -30,18 +30,22 @@ let players = [
 ];
 let walls = []; // Array to store wall positions
 let currentPlayer = 0; // Start with the first player
-let toggleButton;
 let isPlacingWall = false;
+let toggleHtmlButton;
+
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOM fully loaded and parsed");
+    toggleHtmlButton = document.getElementById("toggle-button");
+    console.log(toggleHtmlButton)
+    toggleHtmlButton.addEventListener("click", toggleWallPlacement);
+});
 
 function setup() {
-    createCanvas(400, 400);
+    const canvas = createCanvas(400, 400);
+    canvas.parent('game');
     cellSize = width / boardSize;
     board = createBoard();
     drawPlayers();
-    // walls.push({ x: 0, y: 1, orientation: 'horizontal' });
-    // walls.push({ x: 5, y: 5, orientation: 'vertical' });
-    toggleButton = createButton('Place Wall');
-    toggleButton.mousePressed(toggleWallPlacement);
 }
 
 function drawPlayers() {
@@ -79,7 +83,7 @@ function draw() {
 
 function toggleWallPlacement() {
     isPlacingWall = !isPlacingWall;
-    toggleButton.html(isPlacingWall ? 'Move Player' : 'Place Wall');
+    toggleHtmlButton.innerHTML(isPlacingWall ? 'Move Player' : 'Place Wall');
 }
 
 function canPlaceWall(x, y, orientation) {
@@ -317,11 +321,8 @@ function mouseClicked() {
 }
 
 function displayWallsLeft() {
-    document.getElementById('info').innerHTML = `
-        <p>Player 1 Walls Left: ${(10 - players[0].wallsPlaced)}</p>
-        <p>Player 2 Walls Left: ${(10 - players[1].wallsPlaced)}</p>
-    `;
-
+    document.getElementById("player-1-walls-left").innerHTML = (10 - players[0].wallsPlaced);
+    document.getElementById("player-2-walls-left").innerHTML = (10 - players[1].wallsPlaced);
 }
 
 function updateAnimation() {

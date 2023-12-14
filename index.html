@@ -3,16 +3,25 @@
 <head>
     <title>Quoridor Game</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <style>
-        main {
-
-        }
-    </style>
+    <link href="https://fonts.cdnfonts.com/css/product-sans" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main>
-    <p id="info"></p>
+<main class="container">
+    <h1 class="title">Quoridor Game</h1>
+    <div id="game"></div>
+    <div class="player-stats">
+        <div class="player-stat player-1">
+            <h2 class="player-name">Player 1</h2>
+            <p class="player-walls">Walls left: <span id="player-1-walls-left">10</span></p>
+        </div>
+        <div class="player-stat player-2">
+            <h2 class="player-name">Player 2</h2>
+            <p class="player-walls">Walls left: <span id="player-2-walls-left">10</span></p>
+        </div>
+    </div>
+    <button id="toggle-wall">Place Wall</button>
 </main>
-<script src="sketch.js"></script>
+<script src="sketch.js" async></script>
 </body>
 </html>
