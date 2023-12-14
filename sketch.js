@@ -3,8 +3,30 @@ let boardSize = 9;
 let cellSize;
 let board;
 let players = [
-    {x: 4, y: 0, animatedX: 4, animatedY: 0, color: [255, 0, 0], wallsPlaced: 0}, // Red color for player 1
-    {x: 4, y: 8, animatedX: 4, animatedY: 8, color: [0, 0, 255], wallsPlaced: 0}, // Blue color for player 2
+    {
+        x: 4,
+        y: 0,
+        startPoints: {
+            x: 4,
+            y: 0
+        },
+        animatedX: 4,
+        animatedY: 0,
+        color: [255, 0, 0],
+        wallsPlaced: 0
+    }, // Red color for player 1
+    {
+        x: 4,
+        y: 8,
+        startPoints: {
+            x: 4,
+            y: 8
+        },
+        animatedX: 4,
+        animatedY: 8,
+        color: [0, 0, 255],
+        wallsPlaced: 0
+    }, // Blue color for player 2
 ];
 let walls = []; // Array to store wall positions
 let currentPlayer = 0; // Start with the first player
@@ -60,42 +82,6 @@ function toggleWallPlacement() {
     toggleButton.html(isPlacingWall ? 'Move Player' : 'Place Wall');
 }
 
-function bfs(start, end) {
-    let queue = [];
-    let visited = new Array(boardSize).fill(false).map(() => new Array(boardSize).fill(false));
-
-    queue.push(start);
-    visited[start.y][start.x] = true;
-
-    while (queue.length > 0) {
-        let current = queue.shift();
-
-        if (current.x === end.x && current.y === end.y) {
-            return true;
-        }
-
-        let directions = [
-            {dx: -1, dy: 0}, // left
-            {dx: 1, dy: 0}, // right
-            {dx: 0, dy: -1}, // up
-            {dx: 0, dy: 1}, // down
-        ];
-
-        for (let dir of directions) {
-            let newX = current.x + dir.dx;
-            let newY = current.y + dir.dy;
-
-            if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize &&
-                !isWallInWay(current.x, current.y, newX, newY) && !visited[newY][newX]) {
-                queue.push({x: newX, y: newY});
-                visited[newY][newX] = true;
-            }
-        }
-    }
-
-    return false;
-}
-
 function canPlaceWall(x, y, orientation) {
     if (players[currentPlayer].wallsPlaced >= 10) {
         console.log('No more walls left');
@@ -149,25 +135,64 @@ function canPlaceWall(x, y, orientation) {
         }
     }
 
-    walls.push({x: x, y: y, orientation: orientation});
+    // Simulate placing the wall
+    let simulatedWalls = walls.slice(); // Copy the current walls
+    simulatedWalls.push({x: x, y: y, orientation: orientation});
 
-    // Check if there is a path for each player
+    // Check if there is still a path for each player
     for (let player of players) {
-        let end = {x: player.x, y: player.color[0] === 255 ? boardSize - 1 : 0}; // Assuming red player moves towards the bottom and blue player moves towards the top
-        if (!bfs(player, end)) {
-            // If there is no path, remove the temporary wall and return false
-            walls.pop();
-            console.log('Wall would block player');
+        if (!isPathToGoal(player, simulatedWalls)) {
+            console.log('Wall would block a player');
             return false;
         }
     }
-
-    // If there is a path for each player, remove the temporary wall and return true
-    walls.pop();
     // If there is no wall and the new wall would not cross an existing wall or overlap with half of an existing wall, return true
     return true;
 }
 
+function isPathToGoal(player, walls) {
+    let queue = [{x: player.x, y: player.y}];
+    let visited = new Set([`${player.x},${player.y}`]);
+
+    while (queue.length > 0) {
+        let {x, y} = queue.shift();
+
+        // If this position is on the goal line, return true
+        if ((player.startPoints.y === 0 && y === boardSize - 1) ||
+            (player.startPoints.y === boardSize - 1 && y === 0)) {
+            // Check if there is a wall on the goal line that would block the player's path
+            if (!isWallInWay(x, y, x, y + (player.startPoints.y === 0 ? 1 : -1), walls)) {
+                return true;
+            }
+        }
+
+        // Check the adjacent positions
+        let directions = [
+            {dx: -1, dy: 0}, // left
+            {dx: 1, dy: 0}, // right
+            {dx: 0, dy: -1}, // up
+            {dx: 0, dy: 1}, // down
+        ];
+        for (let dir of directions) {
+            let newX = x + dir.dx;
+            let newY = y + dir.dy;
+
+            // If the position is inside the board and not blocked by a wall
+            if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize &&
+                !isWallInWay(x, y, newX, newY, walls)) {
+                let pos = `${newX},${newY}`;
+                // If this position has not been visited yet
+                if (!visited.has(pos)) {
+                    queue.push({x: newX, y: newY});
+                    visited.add(pos);
+                }
+            }
+        }
+    }
+
+    // If we have explored all reachable positions and have not found the goal line, return false
+    return false;
+}
 function createBoard() {
     let b = new Array(boardSize);
     for (let i = 0; i < boardSize; i++) {
@@ -181,6 +206,14 @@ function drawBoard() {
         for (let j = 0; j < boardSize; j++) {
             stroke(0);
             fill(255);
+            for (const player of players) {
+                if (player.startPoints.x === 4 && player.startPoints.y === boardSize - j - 1) {
+                    fill([...player.color, 45]);
+                } else if (player.startPoints.y === 4 && player.startPoints.x === boardSize - i - 1) {
+                    fill([...player.color, 45]);
+                }
+            }
+
             rect(i * cellSize, j * cellSize, cellSize, cellSize);
         }
     }
@@ -213,7 +246,7 @@ function getPlayableSquares(player) {
 
         // If the square is inside the board and there is no wall in the way, it's playable
         if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize &&
-            !isWallInWay(player.x, player.y, newX, newY)) {
+            !isWallInWay(player.x, player.y, newX, newY, walls)) {
             // Check if the opponent is in the square
             let opponent = players[(currentPlayer + 1) % players.length];
             if (newX !== opponent.x || newY !== opponent.y) {
@@ -227,7 +260,7 @@ function getPlayableSquares(player) {
             let beyondX = newX + dir.dx;
             let beyondY = newY + dir.dy;
             if (beyondX >= 0 && beyondX < boardSize && beyondY >= 0 && beyondY < boardSize &&
-                !isWallInWay(newX, newY, beyondX, beyondY)) {
+                !isWallInWay(newX, newY, beyondX, beyondY, walls)) {
                 playableSquares.push({x: beyondX, y: beyondY});
             }
         }
@@ -236,7 +269,7 @@ function getPlayableSquares(player) {
     return playableSquares;
 }
 
-function isWallInWay(x1, y1, x2, y2) {
+function isWallInWay(x1, y1, x2, y2, walls) {
     // Check if there is a wall between the squares (x1, y1) and (x2, y2)
     for (let wall of walls) {
         if (wall.orientation === 'horizontal' && y2 > y1 && wall.y === y1 + 1 && wall.x <= x1 && wall.x + 2 > x1 ||
@@ -244,6 +277,14 @@ function isWallInWay(x1, y1, x2, y2) {
             wall.orientation === 'vertical' && x2 > x1 && wall.x === x1 + 1 && wall.y <= y1 && wall.y + 2 > y1 ||
             wall.orientation === 'vertical' && x2 < x1 && wall.x === x2 + 1 && wall.y <= y1 && wall.y + 2 > y1) {
             return true;
+        }
+    }
+    // Check if there is a wall on the goal line that would block the player's path
+    if ((y1 === 0 && y2 === boardSize - 1) || (y1 === boardSize - 1 && y2 === 0)) {
+        for (let wall of walls) {
+            if (wall.orientation === 'horizontal' && wall.y === y2 && wall.x <= x1 && wall.x + 2 > x1) {
+                return true;
+            }
         }
     }
     return false;
