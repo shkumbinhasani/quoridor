@@ -211,7 +211,7 @@ function createBoard() {
 function drawBoard() {
     for (let i = 0; i < boardSize; i++) {
         for (let j = 0; j < boardSize; j++) {
-            stroke(0);
+            stroke(148, 148, 148); // Change the stroke color to red
             fill(255);
             for (const player of players) {
                 if (player.startPoints.x === 4 && player.startPoints.y === boardSize - j - 1) {
