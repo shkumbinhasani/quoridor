@@ -33,12 +33,15 @@ let currentPlayer = 0; // Start with the first player
 let isPlacingWall = false;
 let toggleHtmlButton;
 
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("DOM fully loaded and parsed");
-    toggleHtmlButton = document.getElementById("toggle-button");
+const interval = setInterval(() => {
+    toggleHtmlButton = document.getElementById("toggle-wall");
     console.log(toggleHtmlButton)
-    toggleHtmlButton.addEventListener("click", toggleWallPlacement);
-});
+    if (toggleHtmlButton) {
+        toggleHtmlButton.addEventListener("click", toggleWallPlacement);
+        clearInterval(interval);
+    }
+}, 100);
+
 
 function setup() {
     const canvas = createCanvas(400, 400);
@@ -83,7 +86,7 @@ function draw() {
 
 function toggleWallPlacement() {
     isPlacingWall = !isPlacingWall;
-    toggleHtmlButton.innerHTML(isPlacingWall ? 'Move Player' : 'Place Wall');
+    toggleHtmlButton.innerHTML = isPlacingWall ? 'Move Player' : 'Place Wall';
 }
 
 function canPlaceWall(x, y, orientation) {
