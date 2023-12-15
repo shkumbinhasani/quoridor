@@ -401,9 +401,9 @@ function mouseClicked() {
         if (canPlaceWall(x, y, orientation)) {
             walls.push({x: x, y: y, orientation: orientation});
             isPlacingWall = !isPlacingWall;
-            toggleHtmlButton.innerHTML = isPlacingWall ? 'Move Player' : 'Place Wall';
             players[currentPlayer].wallsPlaced++;
             currentPlayer = (currentPlayer + 1) % players.length;
+            toggleHtmlButton.innerHTML = isPlacingWall ? 'Move Player' : 'Place Wall';
             updateGameStateToOtherPlayers();
         }
     } else {
