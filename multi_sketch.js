@@ -13,7 +13,8 @@ let players = [
         animatedX: 4,
         animatedY: 0,
         color: [255, 0, 0],
-        wallsPlaced: 0
+        wallsPlaced: 0,
+        peerId: null
     }, // Red color for player 1
     {
         x: 4,
@@ -25,7 +26,8 @@ let players = [
         animatedX: 4,
         animatedY: 8,
         color: [0, 0, 255],
-        wallsPlaced: 0
+        wallsPlaced: 0,
+        peerId: null
     }, // Blue color for player 2
 ];
 let walls = []; // Array to store wall positions
@@ -61,31 +63,38 @@ let peer = new Peer();
 peer.on('open', function (id) {
     console.log('My peer ID is: ' + id);
     document.getElementById("peer-id").innerHTML = id;
+
+    players[0].peerId = id;
 });
 
 // When a connection is established from another player
-peer.on('connection', function (connection) {
-    conn = connection;
-    console.log('Connected to', connection);
-    connection.send(getGameState())
 
+function setupDataListener(connection) {
     connection.on('data', function (data) {
         // Update the game state with the received data
         console.log('Received', data);
         updateGameState(data);
         onConnectionEstablished()
     });
+}
+
+peer.on('connection', function (connection) {
+    conn = connection;
+    console.log('Connected to', connection);
+    setupDataListener(connection); // Set up the 'data' event listener
 });
 
 // Function to connect to another player
 function connectToPlayer(peerId) {
     // Establish a connection to the other player
+    players[1].peerId = peerId;
     conn = peer.connect(peerId);
 
     // When the connection is open
     conn.on('open', function () {
         // Send the current game state to the other player
         conn.send(getGameState());
+        setupDataListener(conn); // Set up the 'data' event listener
         onConnectionEstablished()
     });
 }
@@ -378,6 +387,12 @@ function isWallInWay(x1, y1, x2, y2, walls) {
 }
 
 function mouseClicked() {
+
+    if (peer.id !== players[currentPlayer].peerId) {
+        console.log('It is not your turn');
+        return;
+    }
+
     let x = Math.floor(mouseX / cellSize);
     let y = Math.floor(mouseY / cellSize);
 
@@ -386,7 +401,7 @@ function mouseClicked() {
         if (canPlaceWall(x, y, orientation)) {
             walls.push({x: x, y: y, orientation: orientation});
             isPlacingWall = !isPlacingWall;
-            toggleButton.html(isPlacingWall ? 'Move Player' : 'Place Wall');
+            toggleHtmlButton.innerHTML = isPlacingWall ? 'Move Player' : 'Place Wall';
             players[currentPlayer].wallsPlaced++;
             currentPlayer = (currentPlayer + 1) % players.length;
             updateGameStateToOtherPlayers();
