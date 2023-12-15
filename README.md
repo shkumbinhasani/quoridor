@@ -1,4 +1,4 @@
-![img.png](cover.png)
+<img src="cover.png" style="border-radius:20px" alt="author: Shkumbin Hasani" />
 
 # Quoridor - A Strategic Board Game
 
