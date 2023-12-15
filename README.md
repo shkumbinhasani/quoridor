@@ -1,6 +1,20 @@
 ![img.png](cover.png)
 
-# Quoridor
+# Quoridor - A Strategic Board Game
+
+[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://quoridor.shkumbinhsn.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![GitHub stars](https://img.shields.io/github/stars/shkumbinhasani/quoridor.svg)
+![GitHub forks](https://img.shields.io/github/forks/shkumbinhasani/quoridor.svg)
+![GitHub issues](https://img.shields.io/github/issues/shkumbinhasani/quoridor.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/shkumbinhasani/quoridor.svg)
+![GitHub contributors](https://img.shields.io/github/contributors/shkumbinhasani/quoridor.svg)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/shkumbinhasani/quoridor.svg)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/shkumbinhasani/quoridor.svg)
+![GitHub repo size](https://img.shields.io/github/repo-size/shkumbinhasani/quoridor.svg)
+![GitHub language count](https://img.shields.io/github/languages/count/shkumbinhasani/quoridor.svg)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/shkumbinhasani/quoridor.svg)
+![GitHub top language](https://img.shields.io/github/languages/top/shkumbinhasani/quoridor.svg)
 
 Welcome to the open-source project for Quoridor, a strategic board game designed to challenge your problem-solving skills. This project is built using JavaScript and the p5.js library.
 
