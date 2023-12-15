@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Quoridor Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <link href="https://fonts.cdnfonts.com/css/product-sans" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="container" id="peer-container">
+    <h1 class="title">Multiplayer Quoridor Game</h1>
+    <p class="description">My peer id is: <span id="peer-id"></span></p>
+    <input type="text" id="peer-id-input" placeholder="Enter peer id">
+    <button id="connect-button">Connect</button>
+</main>
+<main class="container" id="game-container" style="display: none">
+    <h1 class="title">Quoridor Game</h1>
+    <div id="game"></div>
+    <div class="player-stats">
+        <div class="player-stat player-1">
+            <h2 class="player-name">Player 1</h2>
+            <p class="player-walls">Walls left: <span id="player-1-walls-left">10</span></p>
+        </div>
+        <div class="player-stat player-2">
+            <h2 class="player-name">Player 2</h2>
+            <p class="player-walls">Walls left: <span id="player-2-walls-left">10</span></p>
+        </div>
+    </div>
+    <button id="toggle-wall">Place Wall</button>
+</main>
+<script src="multi_sketch.js" async></script>
+</body>
+</html>

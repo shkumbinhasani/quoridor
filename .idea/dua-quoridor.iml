@@ -10,5 +10,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="p5.js" level="application" />
     <orderEntry type="library" name="p5.js" level="application" />
+    <orderEntry type="library" name="peerjs" level="application" />
   </component>
 </module>
