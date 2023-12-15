@@ -57,7 +57,19 @@ if (document.readyState === "loading") {
 
 
 // Create a Peer object for the player
-let peer = new Peer();
+let peer = new Peer({
+    config: {
+        'iceServers': [
+            {url: 'stun:stun.l.google.com:19302'},
+            {url: 'stun:stun1.l.google.com:19302'},
+            {
+                url: 'turn:46.101.109.201',
+                username: 'username',
+                credential: 'password'
+            }
+        ]
+    } /* Sample servers, please use appropriate ones */
+});
 
 // When the Peer object is ready, log its ID (this is what other players will use to connect to this player)
 peer.on('open', function (id) {
