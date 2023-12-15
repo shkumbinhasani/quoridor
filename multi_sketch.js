@@ -368,7 +368,8 @@ function getPlayableSquares(player) {
             let beyondX = newX + dir.dx;
             let beyondY = newY + dir.dy;
             if (beyondX >= 0 && beyondX < boardSize && beyondY >= 0 && beyondY < boardSize &&
-                !isWallInWay(newX, newY, beyondX, beyondY, walls)) {
+                !isWallInWay(newX, newY, beyondX, beyondY, walls) &&
+                !isWallInWay(player.x, player.y, newX, newY, walls)) { // Check if there is a wall between the current player and the opponent
                 playableSquares.push({x: beyondX, y: beyondY});
             }
         }
@@ -376,7 +377,6 @@ function getPlayableSquares(player) {
 
     return playableSquares;
 }
-
 function isWallInWay(x1, y1, x2, y2, walls) {
     // Check if there is a wall between the squares (x1, y1) and (x2, y2)
     for (let wall of walls) {
