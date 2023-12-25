@@ -47,6 +47,38 @@ const onReady = () => {
             console.log("Connecting to player", peerId);
             connectToPlayer(peerId);
         });
+
+    const chatHeader = document.getElementById("chat-header");
+    const chatContainer = document.getElementById("chat");
+
+    chatHeader.addEventListener("click", () => {
+        if (chatContainer.classList.contains("collapsed")) {
+            chatContainer.classList.remove("collapsed");
+        } else {
+            chatContainer.classList.add("collapsed");
+        }
+    });
+
+    document.getElementById('chat-form').addEventListener('submit', function(event) {
+        // Prevent the default form submission behavior
+        event.preventDefault();
+
+        // Get the message from the input field
+        let message = document.getElementById('chat-input').value;
+
+        // Send the message to the other player
+        conn.send({ type: 'chat', message: message });
+
+        // Add the message to the chat container
+        let chatMessages = document.getElementById('chat-messages');
+        let li = document.createElement('li');
+        li.classList.add('me');
+        li.textContent = message;
+        chatMessages.appendChild(li);
+
+        // Clear the input field
+        document.getElementById('chat-input').value = '';
+    });
 }
 
 if (document.readyState === "loading") {
@@ -84,9 +116,19 @@ peer.on('open', function (id) {
 function setupDataListener(connection) {
     connection.on('data', function (data) {
         // Update the game state with the received data
-        console.log('Received', data);
-        updateGameState(data);
-        onConnectionEstablished()
+        if (data.type === 'chat') {
+            // Add the message to the chat container
+            let chatMessages = document.getElementById('chat-messages');
+            let li = document.createElement('li');
+            li.classList.add('opponent');
+            li.textContent = data.message;
+            chatMessages.appendChild(li);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+            console.log('Received', data);
+            updateGameState(data);
+            onConnectionEstablished()
+        }
     });
 }
 
@@ -114,6 +156,7 @@ function connectToPlayer(peerId) {
 function onConnectionEstablished() {
     document.getElementById("peer-container").style.display = "none";
     document.getElementById("game-container").style.display = "block";
+    document.getElementById("chat").style.display = "flex";
 }
 
 // Function to get the current game state
