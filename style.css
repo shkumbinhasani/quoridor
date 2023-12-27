@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: Product Sans,sans-serif;
+    font-family: Product Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     min-height: 100dvh;
     display: grid;
     place-items: center;
@@ -56,7 +56,6 @@ body {
 .player-walls {
     margin: 0;
 }
-
 
 
 #peer-container {
@@ -190,6 +189,7 @@ ul#chat-messages {
     padding: .5rem;
     max-height: 100%;
     flex-grow: 0;
+    box-sizing: border-box;
 }
 
 ul > li.opponent {
@@ -210,4 +210,15 @@ ul > li.me {
     border-radius: 0.5rem 0 0.5rem 0.5rem;
     margin-bottom: .25rem;
     margin-left: auto;
+}
+
+ul > li.system {
+    text-align: center;
+    padding: .5rem;
+    background-color: #e7e7e7;
+    width: fit-content;
+    border-radius: 0.5rem;
+    margin-bottom: .25rem;
+    margin-left: auto;
+    margin-right: auto;
 }

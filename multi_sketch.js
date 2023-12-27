@@ -2,7 +2,7 @@
 let boardSize = 9;
 let cellSize;
 let board;
-let players = [
+const defaultValue = [
     {
         x: 4,
         y: 0,
@@ -30,11 +30,13 @@ let players = [
         peerId: null
     }, // Blue color for player 2
 ];
+let players = [...defaultValue];
 let walls = []; // Array to store wall positions
 let currentPlayer = 0; // Start with the first player
 let isPlacingWall = false;
 let toggleHtmlButton;
 let conn;
+const jsConfetti = new JSConfetti()
 
 const onReady = () => {
     toggleHtmlButton = document.getElementById("toggle-wall");
@@ -59,7 +61,7 @@ const onReady = () => {
         }
     });
 
-    document.getElementById('chat-form').addEventListener('submit', function(event) {
+    document.getElementById('chat-form').addEventListener('submit', function (event) {
         // Prevent the default form submission behavior
         event.preventDefault();
 
@@ -67,7 +69,7 @@ const onReady = () => {
         let message = document.getElementById('chat-input').value;
 
         // Send the message to the other player
-        conn.send({ type: 'chat', message: message });
+        conn.send({type: 'chat', message: message});
 
         // Add the message to the chat container
         let chatMessages = document.getElementById('chat-messages');
@@ -75,10 +77,19 @@ const onReady = () => {
         li.classList.add('me');
         li.textContent = message;
         chatMessages.appendChild(li);
-
+        chatMessages.scrollTop = chatMessages.scrollHeight;
         // Clear the input field
         document.getElementById('chat-input').value = '';
     });
+}
+
+function displaySystemMessage(message) {
+    let chatMessages = document.getElementById('chat-messages');
+    let li = document.createElement('li');
+    li.classList.add('system');
+    li.textContent = message;
+    chatMessages.appendChild(li);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 if (document.readyState === "loading") {
@@ -136,6 +147,11 @@ peer.on('connection', function (connection) {
     conn = connection;
     console.log('Connected to', connection);
     setupDataListener(connection); // Set up the 'data' event listener
+
+    conn.on('close', function () {
+        // Display a system message saying "Player disconnected"
+        displaySystemMessage('Player disconnected');
+    });
 });
 
 // Function to connect to another player
@@ -150,6 +166,11 @@ function connectToPlayer(peerId) {
         conn.send(getGameState());
         setupDataListener(conn); // Set up the 'data' event listener
         onConnectionEstablished()
+    });
+
+    conn.on('close', function () {
+        // Display a system message saying "Player disconnected"
+        displaySystemMessage('Player disconnected');
     });
 }
 
@@ -175,6 +196,12 @@ function updateGameState(data) {
     walls = data.walls;
     currentPlayer = data.currentPlayer;
     isPlacingWall = data.isPlacingWall;
+
+    checkWinCondition();
+
+    if (peer.id === players[currentPlayer].peerId) {
+        displaySystemMessage('Your turn');
+    }
 }
 
 
@@ -207,11 +234,13 @@ function draw() {
 
 
     if (!isPlacingWall) {
-        // Highlight playable squares
-        for (let square of playableSquares) {
-            fill(200, 200, 0, 128); // Yellow color for playable squares
-            rect(square.x * cellSize, square.y * cellSize, cellSize, cellSize);
+        if (peer.id === players[currentPlayer].peerId) {
+            for (let square of playableSquares) {
+                fill(200, 200, 0, 128); // Yellow color for playable squares
+                rect(square.x * cellSize, square.y * cellSize, cellSize, cellSize);
+            }
         }
+
     } else {
         drawPotentialWall();
     }
@@ -420,6 +449,7 @@ function getPlayableSquares(player) {
 
     return playableSquares;
 }
+
 function isWallInWay(x1, y1, x2, y2, walls) {
     // Check if there is a wall between the squares (x1, y1) and (x2, y2)
     for (let wall of walls) {
@@ -473,6 +503,8 @@ function mouseClicked() {
             }
         }
     }
+
+    checkWinCondition();
 }
 
 function displayWallsLeft() {
@@ -519,3 +551,23 @@ function drawPotentialWall() {
 }
 
 // Add more functions for game logic, player movement, wall placement, etc.
+
+function checkWinCondition() {
+    if (players[0].y === 8 || players[1].y === 0) {
+        const winner = players[0].y === 8 ? 0 : 1;
+
+        if (peer.id === players[winner].peerId) {
+            jsConfetti.addConfetti({
+            })
+        }
+
+        setTimeout(() => {
+            players[0].x = players[0].startPoints.x;
+            players[0].y = players[0].startPoints.y;
+            players[1].x = players[1].startPoints.x;
+            players[1].y = players[1].startPoints.y;
+            walls = [];
+            isPlacingWall = false;
+        }, 1000);
+    }
+}
