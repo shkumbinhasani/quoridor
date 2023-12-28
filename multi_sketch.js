@@ -195,7 +195,6 @@ function updateGameState(data) {
     players = data.players;
     walls = data.walls;
     currentPlayer = data.currentPlayer;
-    isPlacingWall = data.isPlacingWall;
 
     checkWinCondition();
 
