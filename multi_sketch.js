@@ -136,8 +136,9 @@ function setupDataListener(connection) {
             chatMessages.appendChild(li);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         } else if (data.type === 'cursor') {
-            const x = data.x - 10;
-            const y = data.y - 10;
+            const rect = canvas.getBoundingClientRect();
+            const x = data.x + rect.left;
+            const y = data.y + rect.top;
             const cursor = document.getElementById("cursor");
             cursor.style.left = `${x}px`;
             cursor.style.top = `${y}px`;
@@ -186,8 +187,10 @@ function onConnectionEstablished() {
     document.getElementById("chat").style.display = "flex";
 
     window.addEventListener("mousemove", function (event) {
-        const x = event.x;
-        const y = event.y;
+        // Get the mouse position relative to the canvas element
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
         conn.send({type: 'cursor', x, y});
     });
 }
