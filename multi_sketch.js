@@ -135,6 +135,12 @@ function setupDataListener(connection) {
             li.textContent = data.message;
             chatMessages.appendChild(li);
             chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else if (data.type === 'cursor') {
+            const x = data.x - 10;
+            const y = data.y - 10;
+            const cursor = document.getElementById("cursor");
+            cursor.style.left = `${x}px`;
+            cursor.style.top = `${y}px`;
         } else {
             console.log('Received', data);
             updateGameState(data);
@@ -178,6 +184,12 @@ function onConnectionEstablished() {
     document.getElementById("peer-container").style.display = "none";
     document.getElementById("game-container").style.display = "block";
     document.getElementById("chat").style.display = "flex";
+
+    window.addEventListener("mousemove", function (event) {
+        const x = event.x;
+        const y = event.y;
+        conn.send({type: 'cursor', x, y});
+    });
 }
 
 // Function to get the current game state
@@ -556,8 +568,7 @@ function checkWinCondition() {
         const winner = players[0].y === 8 ? 0 : 1;
 
         if (peer.id === players[winner].peerId) {
-            jsConfetti.addConfetti({
-            })
+            jsConfetti.addConfetti({})
         }
 
         setTimeout(() => {
