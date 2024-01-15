@@ -186,13 +186,13 @@ function onConnectionEstablished() {
     document.getElementById("game-container").style.display = "block";
     document.getElementById("chat").style.display = "flex";
 
-    window.addEventListener("mousemove", function (event) {
-        // Get the mouse position relative to the canvas element
-        const rect = canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        conn.send({type: 'cursor', x, y});
-    });
+    // window.addEventListener("mousemove", function (event) {
+    //     // Get the mouse position relative to the canvas element
+    //     const rect = canvas.getBoundingClientRect();
+    //     const x = event.clientX - rect.left;
+    //     const y = event.clientY - rect.top;
+    //     conn.send({type: 'cursor', x, y});
+    // });
 }
 
 // Function to get the current game state
